@@ -1,0 +1,166 @@
+<!--
+  vi: ft=htmldjango
+-->
+
+<!doctype html>
+
+<html lang="en">
+
+  <meta charset="utf-8">
+  <meta name="description" content="Guitar Tabs">
+  <meta name="viewport" content="width=device-width">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <link rel="icon" type="image/ico" href="{{ url_for('static', filename='img/favicon.ico') }}">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='fonts/fa/css/all.min.css') }}">
+
+  {% block style %}
+    {# style additions #}
+  {% endblock %}
+
+  {% block title %}
+    {% if title %}
+      <title>{{ title }}</title>
+    {% else %}
+      <title>{{ g.config.app_name }}</title>
+    {% endif %}
+  {% endblock %}
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="{{ url_for('main.index') }}">
+        <i class="fa fa-guitar"></i>
+        Guitar Tabs
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
+          </li>
+        </ul>
+        {% if current_user.is_authenticated %}
+          <div class="d-flex mt-2 mt-lg-0">
+            <a class="btn btn-outline-primary me-2" href="#">
+              <i class="fa fa-cogs" title="User settings"></i>
+            </a>
+            {% if current_user.is_admin %}
+              <a class="btn btn-outline-primary me-2" href="#">
+                <i class="fa fa-toolbox" title="Admin settings"></i>
+              </a>
+            {% endif %}
+          </div>
+        {% endif %}
+        <div class="d-flex mt-2 mt-lg-0">
+          {% if current_user.is_authenticated %}
+            <a class="btn btn-outline-dark" href="{{ url_for('auth.logout') }}">
+              Log out
+            </a>
+          {% else %}
+            <a class="btn btn-outline-primary me-2" href="{{ url_for('auth.login') }}">
+              Log in
+            </a>
+            <a class="btn btn-primary" href="{{ url_for('auth.register') }}">
+              Sign up
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-3">
+
+    {% block content %}
+    {% endblock %}
+
+  </div>
+
+  <div class="mt-3 ms-3 me-3">
+
+    {% block fullwidth %}
+    {% endblock %}
+
+  </div>
+
+  <div class="container mt-3 mb-4">
+    <hr>
+
+    <div class="row">
+      <div class="col-6">
+        <span class="text-muted ml-2">
+          Copyright (c) 2021 Philipp Glaum
+        </span>
+      </div>
+      <div class="col-6 text-end">
+        <a href="{{ url_for('main.impressum') }}">
+          Impressum
+        </a>
+      </div>
+    </div>
+  </div>
+
+  {% block flash %}
+    <div id="flashed-messages">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            {% if category == 'message' %}
+              {% set category = 'info' %}
+            {% endif %}
+
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message|safe }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    <style>
+      #flashed-messages {
+        position: fixed;
+        bottom: 1em;
+        right: 1em;
+        margin-left: 1em;
+      }
+    </style>
+  {% endblock %}
+
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+
+  <script>
+    function js_error() {
+      $('#flashed-messages').append(`
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          An error has ocurred. Please reload the page to avoid unforseeable
+          states.
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      `);
+    }
+
+    function flash_message(message, type) {
+      $('#flashed-messages').append('<div class="alert alert-' + type +
+        ' alert-dismissible fade show" role="alert">' + message +
+        '<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
+    }
+  </script>
+
+  <script>
+    console.log('Page rendering took {{ g.request_time() }}');
+  </script>
+
+  {% block script %}
+    {# script additions #}
+  {% endblock %}
+
+</html>

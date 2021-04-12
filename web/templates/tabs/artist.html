@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <h3>Tabs by: {{ artist_name }}</h3>
+
+  <div class="row">
+    {% for x in tabs.keys() %}
+      <div class="col-md-6">
+        <h5>{{ x }}</h5>
+
+        <ul>
+          {% for y in tabs[x] %}
+            <li>
+              <a href="{{ url_for('tabs.render', tab_id=y.id) }}">
+                {{ y.song }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+
+{% endblock %}

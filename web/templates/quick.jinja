@@ -1,0 +1,31 @@
+{#
+  vi: ft=htmldjango
+#}
+
+{% macro really_delete(button_text, modal_title, modal_body, url) %}
+  <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#really-delete-modal">
+    <i class="fa fa-trash"></i>
+    {{ button_text }}
+  </button>
+
+  <div class="modal" tabindex="-1" id="really-delete-modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ modal_title }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>{{ modal_body }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <a class="btn btn-danger" href="{{ url }}">
+            <i class="fa fa-trash"></i>
+            Delete
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endmacro %}
