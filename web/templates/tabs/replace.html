@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% import 'forms.jinja' as f %}
+
+{% block content %}
+
+  <h1>Upload a new Tab for "{{ tab.name }}"</h1>
+
+  <div class="row">
+    <div class="col-md-6">
+
+      <form action="" method="post" enctype="multipart/form-data" novalidate>
+
+        {{ form.hidden_tag() }}
+
+        {{ f.input(form.upload_file) }}
+
+        <button type="submit" class="btn btn-primary">
+          <i class="fa fa-file-upload"></i>
+          Upload
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}
+

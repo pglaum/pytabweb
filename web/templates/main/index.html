@@ -9,10 +9,13 @@
       <i class="fa fa-search"></i>
       Search
     </a>
-    <a href="{{ url_for('tabs.upload') }}" class="btn btn-outline-secondary">
-      <i class="fa fa-file-upload"></i>
-      Upload new tab
-    </a>
+
+    {% if current_user.is_authenticated %}
+      <a href="{{ url_for('tabs.upload') }}" class="btn btn-outline-secondary">
+        <i class="fa fa-file-upload"></i>
+        Upload new tab
+      </a>
+    {% endif %}
   </div>
 
   <div class="row">

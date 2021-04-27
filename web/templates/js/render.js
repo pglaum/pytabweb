@@ -3,17 +3,27 @@ const main = wrapper.querySelector(".at-main");
 
 const settings = {
   file: "{{ url_for('tabs.get_tab', tab_id=tab.id) }}",
-  notation: {
-    rhythmMode: 'showwithbars',
-  },
   player: {
     enablePlayer: true,
     scrollElement: '.at-viewport',
     soundFont: '{{ url_for("static", filename="fonts/sonivox.sf2") }}',
   },
   display: {
-    padding: [10, 10, 0, 0],
+    staveProfile: 'tab',
     stretchForce: 0.5,
+  },
+  notation: {
+    elements: {
+      ScoreTitle: false,
+      ScoreSubTitle: false,
+      ScoreArtist: false,
+      ScoreAlbum: false,
+      ScoreWords: false,
+      ScoreMusic: false,
+      ScoreWordsAndMusic: false,
+      ScoreCopyright: false,
+    },
+    rhythmMode: 'showwithbars',
   },
 };
 const api = new alphaTab.AlphaTabApi(main, settings);

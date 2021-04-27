@@ -1,6 +1,5 @@
 .at-wrap {
-  width: 100%;
-  height: 85vh;
+  width: 97%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -12,15 +11,6 @@
   position: relative;
   overflow: hidden;
   flex: 1 1 auto;
-}
-
-.at-viewport {
-  overflow-y: auto;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
 }
 
 .at-footer {

@@ -5,7 +5,7 @@ Blueprint for guitar tab routes
 
 from flask import Blueprint, flash, redirect, render_template, request, \
     send_file, url_for
-from flask_login import login_required
+from flask_login import current_user, login_required
 from hashlib import sha256
 from models.tabs import GuitarTab
 from web import app, db
@@ -37,6 +37,7 @@ def artist(artist_name):
 
     tabs_ = GuitarTab.query \
         .filter_by(band=artist_name) \
+        .order_by(GuitarTab.track) \
         .all()
 
     tabs = {}
@@ -68,6 +69,11 @@ def get_tab(tab_id):
 @login_required
 @tabs.route('/upload', methods=['GET', 'POST'])
 def upload():
+
+    if not current_user.is_authenticated:
+
+        flash('You are not logged in.', 'danger')
+        return redirect(url_for('main.index'))
 
     form = UploadForm()
 
@@ -121,6 +127,24 @@ def delete(tab_id):
 
     flash('Tab was deleted.', 'success')
     return redirect(url_for('main.index'))
+
+
+@tabs.route('/download_gp/<tab_id>')
+def download_gp(tab_id):
+
+    tab = GuitarTab.query.filter_by(id=tab_id).first()
+    if not tab:
+        flash('Tab not found.', 'danger')
+        return redirect(url_for('main.index'))
+
+    filename = os.path.join(app.config.get('DATA_DIR'), tab.sha256 + tab.ext)
+    if not os.path.isfile(filename):
+        return "Not Found", 404
+
+    attachment_filename = f'{tab.band} - {tab.song}{tab.ext}'
+
+    return send_file(filename, as_attachment=True,
+                     attachment_filename=attachment_filename)
 
 
 @login_required
