@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% import 'forms.jinja' as f %}
+
+{% block content %}
+
+  <h1>Edit metadata for "{{ tab.song }}"</h1>
+
+  <a class="btn btn-outline-secondary" href="{{ url_for('tabs.render', tab_id=tab.id) }}">
+    <i class="fa fa-caret-left"></i>
+    Cancel
+  </a>
+
+  <div class="row">
+    <div class="col-md-6">
+
+      <form action="" method="post" enctype="multipart/form-data" novalidate>
+
+        {{ form.hidden_tag() }}
+
+        {{ f.input(form.song) }}
+        {{ f.input(form.album) }}
+        {{ f.input(form.band) }}
+        {{ f.input(form.track) }}
+
+        <div class="d-flex flex-wrap">
+          <button type="submit" class="btn btn-primary me-2">
+            <i class="fa fa-save"></i>
+            Save
+          </button>
+          <a class="btn btn-outline-secondary" href="{{ url_for('tabs.render', tab_id=tab.id) }}">
+            <i class="fa fa-caret-left"></i>
+            Cancel
+          </a>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}
+

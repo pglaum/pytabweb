@@ -114,6 +114,39 @@ def upload():
 
 
 @login_required
+@tabs.route('/edit-metadata/<tab_id>', methods=['GET', 'POST'])
+def edit_metadata(tab_id):
+
+    tab = GuitarTab.query.filter_by(id=tab_id).first()
+    if not tab:
+        flash('Tab not found.', 'danger')
+        return redirect(url_for('main.index'))
+
+    form = EditForm()
+
+    if form.validate_on_submit():
+
+        tab.band = form.band.data
+        tab.album = form.album.data
+        tab.song = form.song.data
+        tab.track = form.track.data
+        db.session.commit()
+
+        flash(f'Metadata for {tab.song} was saved.', 'success')
+
+        return redirect(url_for('tabs.render', tab_id=tab.id))
+
+    else:
+
+        form.band.data = tab.band
+        form.album.data = tab.album
+        form.song.data = tab.song
+        form.track.data = tab.track
+
+    return render_template('tabs/edit-metadata.html', form=form, tab=tab)
+
+
+@login_required
 @tabs.route('/delete/<tab_id>')
 def delete(tab_id):
 
@@ -151,6 +184,8 @@ def download_gp(tab_id):
 @tabs.route('/replace/<tab_id>')
 def replace(tab_id):
 
+    # TODO
+
     # upload a new guitar pro file for this tab
     tab = GuitarTab.query.filter_by(id=tab_id).first()
     if not tab:
@@ -158,7 +193,5 @@ def replace(tab_id):
         return redirect(url_for('main.index'))
 
     form = ReplaceFileForm()
-    cur_filename = os.path.join(app.config.get('DATA_DIR'),
-                                tab.sha256 + tab.ext)
 
     return render_template('tabs/replace.html', form=form)
