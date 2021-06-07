@@ -4,3 +4,5 @@ web/static/fonts/fa
 
 *.db
 *.json
+
+.flaskenv
