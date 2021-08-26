@@ -51,7 +51,7 @@
               <i class="fa fa-cogs" title="User settings"></i>
             </a>
             {% if current_user.is_admin %}
-              <a class="btn btn-outline-primary me-2" href="#">
+              <a class="btn btn-outline-primary me-2" href="{{ url_for('admin.settings') }}">
                 <i class="fa fa-toolbox" title="Admin settings"></i>
               </a>
             {% endif %}
