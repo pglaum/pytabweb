@@ -89,22 +89,24 @@
 
   </div>
 
-  <div class="container mt-3 mb-4">
-    <hr>
+  {% block footer %}
+    <div class="container mt-3 mb-4">
+      <hr>
 
-    <div class="row">
-      <div class="col-6">
-        <span class="text-muted ml-2">
-          Copyright (c) 2021 Philipp Glaum
-        </span>
-      </div>
-      <div class="col-6 text-end">
-        <a href="{{ url_for('main.impressum') }}">
-          Impressum
-        </a>
+      <div class="row">
+        <div class="col-6">
+          <span class="text-muted ml-2">
+            Copyright (c) 2021 Philipp Glaum
+          </span>
+        </div>
+        <div class="col-6 text-end">
+          <a href="{{ url_for('main.impressum') }}">
+            Impressum
+          </a>
+        </div>
       </div>
     </div>
-  </div>
+  {% endblock %}
 
   {% block flash %}
     <div id="flashed-messages">

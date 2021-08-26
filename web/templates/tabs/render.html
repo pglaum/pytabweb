@@ -4,7 +4,8 @@
 
 {% block fullwidth %}
 
-  <script src="https://cdn.jsdelivr.net/npm/@coderline/alphatab@latest/dist/alphaTab.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/@coderline/alphatab@latest/dist/alphaTab.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/@coderline/alphatab@1.3.0-alpha.131/dist/alphaTab.min.js"></script>
 
   <style type="text/css">
     {% include 'css/render.css' %}
@@ -20,24 +21,24 @@
 
     {% if current_user.is_authenticated %}
       <a href="#"
-        class="btn btn-outline-secondary">
+        class="btn btn-outline-secondary me-2 mt-2">
         <i class="fa fa-file-upload"></i>
         New revision
       </a>
       <a href="{{ url_for('tabs.edit_metadata', tab_id=tab.id) }}"
-        class="btn btn-outline-secondary">
+        class="btn btn-outline-secondary me-2 mt-2">
         <i class="fa fa-edit"></i>
         Edit metadata
       </a>
     {% endif %}
     <a href="{{ url_for('tabs.download_gp', tab_id=tab.id) }}"
-       class="btn btn-outline-success">
+       class="btn btn-outline-success me-2 mt-2">
       <i class="fa fa-file-download"></i>
       Download
     </a>
     {% if current_user.is_authenticated %}
       <a href="{{ url_for('tabs.delete', tab_id=tab.id) }}"
-        class="btn btn-outline-danger">
+        class="btn btn-outline-danger me-2 mt-2">
         <i class="fa fa-trash"></i>
         Delete
       </a>
@@ -53,55 +54,59 @@
     </div>
 
     <div class="sticky-top">
-    <div class="at-controls bg-light d-flex flex-row">
-      <div class="at-controls-left me-2 ms-2 mt-2 mb-2">
-        <span class="at-player-progress">0%</span>
-        <a class="btn btn-dark at-player-stop disabled">
-          <i class="fas fa-step-backward"></i>
-        </a>
-        <a class="btn btn-dark at-player-play-pause disabled">
-          <i class="fas fa-play"></i>
-        </a>
-        <div class="at-song-position d-inline ms-2">00:00 / 00:00</div>
-      </div>
+      <div class="at-controls bg-light d-flex flex-row pt-2">
+        <div class="at-controls-left me-2 ms-2 mb-2">
+          <span class="at-player-progress">0%</span>
+          <a class="btn btn-dark at-player-stop disabled">
+            <i class="fas fa-step-backward"></i>
+          </a>
+          <a class="btn btn-dark at-player-play-pause disabled">
+            <i class="fas fa-play"></i>
+          </a>
+          <div class="at-song-position d-inline ms-2">00:00 / 00:00</div>
+        </div>
 
-      <div class="at-controls-right ms-auto me-2 mt-2 mb-2">
-        <a class="btn btn-outline-dark toggle at-metronome">
-          <i class="fas fa-drum"></i>
-          Metronome
-        </a>
-        <a class="btn btn-outline-dark toggle at-loop d-none d-lg-inline-block">
-          <i class="fas fa-retweet"></i>
-          Loop
-        </a>
-        <a class="btn btn-outline-dark at-print d-none d-lg-inline-block">
-          <i class="fas fa-print"></i>
-          Print
-        </a>
-        <div class="at-zoom d-inline ms-2">
-          <i class="fas fa-search"></i>
-          Zoom:
-          <select class="form-select d-inline-block" style="width: 7em !important;">
-            <option value="25">25%</option>
-            <option value="50">50%</option>
-            <option value="75">75%</option>
-            <option value="90">90%</option>
-            <option value="100" selected>100%</option>
-            <option value="110">110%</option>
-            <option value="125">125%</option>
-            <option value="150">150%</option>
-            <option value="200">200%</option>
-          </select>
-        </div>
-        <div class="at-layout d-inline ms-2 d-none d-lg-inline-block">
-          Layout:
-          <select class="form-select d-inline-block" style="width: 9em !important;">
-            <option value="horizontal">Horizontal</option>
-            <option value="page" selected>Page</option>
-          </select>
+        <div class="at-controls-right ms-auto me-2 mb-2">
+
+          <a class="btn btn-outline-dark toggle at-metronome">
+            <i class="fas fa-drum"></i>
+            Metronome
+          </a>
+          <a class="btn btn-outline-dark toggle at-loop d-none d-lg-inline-block">
+            <i class="fas fa-retweet"></i>
+            Loop
+          </a>
+          <a class="btn btn-outline-dark at-print d-none d-lg-inline-block me-2">
+            <i class="fas fa-print"></i>
+            Print
+          </a>
+
+          <div class="at-zoom d-inline-block me-2">
+            <i class="fas fa-search"></i>
+            Zoom:
+            <select class="form-select d-inline-block" style="width: 7em !important;">
+              <option value="25">25%</option>
+              <option value="50">50%</option>
+              <option value="75">75%</option>
+              <option value="90">90%</option>
+              <option value="100" selected>100%</option>
+              <option value="110">110%</option>
+              <option value="125">125%</option>
+              <option value="150">150%</option>
+              <option value="200">200%</option>
+            </select>
+          </div>
+
+          <div class="at-layout d-inline d-none d-lg-inline-block">
+            Layout:
+            <select class="form-select d-inline-block" style="width: 9em !important;">
+              <option value="horizontal">Horizontal</option>
+              <option value="page" selected>Page</option>
+            </select>
+          </div>
+
         </div>
       </div>
-    </div>
     </div>
 
     <div class="mt-2 d-flex flex-wrap at-track-list"></div>
@@ -130,3 +135,5 @@
   </script>
 
 {% endblock %}
+
+{% block footer %}{% endblock %}

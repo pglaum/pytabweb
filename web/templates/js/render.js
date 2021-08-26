@@ -2,16 +2,14 @@ const wrapper = document.querySelector(".at-wrap");
 const main = wrapper.querySelector(".at-main");
 
 const settings = {
-  file: "{{ url_for('tabs.get_tab', tab_id=tab.id) }}",
-  player: {
-    enablePlayer: true,
-    scrollElement: '.at-viewport',
-    soundFont: '{{ url_for("static", filename="fonts/sonivox.sf2") }}',
-  },
   display: {
+    resources: {
+      secondaryGlyphColor: '#0000',
+    },
     staveProfile: 'tab',
     stretchForce: 0.5,
   },
+  file: "{{ url_for('tabs.get_tab', tab_id=tab.id) }}",
   notation: {
     elements: {
       ScoreTitle: false,
@@ -24,6 +22,11 @@ const settings = {
       ScoreCopyright: false,
     },
     rhythmMode: 'showwithbars',
+  },
+  player: {
+    enablePlayer: true,
+    scrollElement: '.at-viewport',
+    soundFont: '{{ url_for("static", filename="fonts/sonivox.sf2") }}',
   },
 };
 const api = new alphaTab.AlphaTabApi(main, settings);
