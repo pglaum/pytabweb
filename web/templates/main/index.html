@@ -23,9 +23,9 @@
     <div class="col-md-6">
       <h5 class="mt-3">Most viewed</h5>
 
-      <ul>
+      <ul class="list-group">
         {% for t in most_viewed %}
-          <li>
+          <li class="list-group-item">
             <a href="{{ url_for('tabs.render', tab_id=t.id) }}">
               {{ t.band }} · {{ t.song }}
             </a>
@@ -35,11 +35,11 @@
     </div>
 
     <div class="col-md-6">
-      <h5 class="mt-3">Recently uploaded</h5>
+      <h5 class="mt-3">Recently added</h5>
 
-      <ul>
+      <ul class="list-group">
         {% for t in recently_uploaded %}
-          <li>
+          <li class="list-group-item">
             <a href="{{ url_for('tabs.render', tab_id=t.id) }}">
               {{ t.band }} · {{ t.song }}
             </a>
