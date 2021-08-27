@@ -6,9 +6,9 @@ from wtforms.validators import DataRequired, Email, EqualTo
 
 class LoginForm(FlaskForm):
 
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Remember me')
+    username = StringField("Username", validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
+    remember_me = BooleanField("Remember me")
 
     def validate(self):
 
@@ -16,13 +16,13 @@ class LoginForm(FlaskForm):
         if not rv:
             return False
 
-        user = User.query \
-            .filter_by(username=self.username.data) \
-            .first()
+        user = User.query.filter_by(username=self.username.data).first()
 
         if user is None:
-            message = f'The user "{self.username.data}" does not exist. ' \
+            message = (
+                f'The user "{self.username.data}" does not exist. '
                 '<a href="/auth/register">Click here</a> to create an account.'
+            )
             self.username.errors.append(message)
             return False
 
@@ -36,32 +36,29 @@ class LoginForm(FlaskForm):
 
 class RegistrationForm(FlaskForm):
 
-    username = StringField('Username', validators=[DataRequired()])
-    email = StringField('Email address', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    password2 = PasswordField('Repeat password', validators=[
-            DataRequired(), EqualTo('password')])
+    username = StringField("Username", validators=[DataRequired()])
+    email = StringField("Email address", validators=[DataRequired(), Email()])
+    password = PasswordField("Password", validators=[DataRequired()])
+    password2 = PasswordField(
+        "Repeat password", validators=[DataRequired(), EqualTo("password")]
+    )
 
     def validate(self):
         rv = FlaskForm.validate(self)
         if not rv:
             return False
 
-        user = User.query \
-            .filter_by(username=self.username.data) \
-            .first()
+        user = User.query.filter_by(username=self.username.data).first()
 
         if user:
-            message = 'A user with this name already exists.'
+            message = "A user with this name already exists."
             self.username.errors.append(message)
             return False
 
-        user = User.query \
-            .filter_by(email=self.email.data) \
-            .first()
+        user = User.query.filter_by(email=self.email.data).first()
 
         if user:
-            message = 'This email address is already used.'
+            message = "This email address is already used."
             self.email.errors.append(message)
             return False
 

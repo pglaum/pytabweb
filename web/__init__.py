@@ -12,6 +12,6 @@ db = SQLAlchemy(app)
 login = LoginManager(app)
 migrate = Migrate(app, db)
 
-login.login_view = 'auth.login'
+login.login_view = "auth.login"
 
 from web import routes

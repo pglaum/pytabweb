@@ -6,7 +6,7 @@ import os
 def default():
 
     return {
-        'registration_enabled': True,
+        "registration_enabled": True,
     }
 
 
@@ -23,18 +23,18 @@ def check(obj):
 
 def get():
 
-    if not os.path.isfile(app.config['CONFIGURATION_FILE']):
+    if not os.path.isfile(app.config["CONFIGURATION_FILE"]):
         return default()
 
-    file_content = ''
-    with open(app.config['CONFIGURATION_FILE'], 'r') as f:
+    file_content = ""
+    with open(app.config["CONFIGURATION_FILE"], "r") as f:
         file_content = f.read()
 
     try:
         jobject = json.loads(file_content)
         return check(jobject)
     except Exception as e:
-        print(f'exception while getting config: {e}')
+        print(f"exception while getting config: {e}")
 
     return default()
 
@@ -43,5 +43,5 @@ def set(obj):
 
     jstring = json.dumps(obj)
 
-    with open(app.config['CONFIGURATION_FILE'], 'w') as f:
+    with open(app.config["CONFIGURATION_FILE"], "w") as f:
         f.write(jstring)
