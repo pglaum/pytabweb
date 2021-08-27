@@ -36,7 +36,7 @@ def render(tab_id):
         tab.views += 1
     db.session.commit()
 
-    return render_template("tabs/render.html", tab=tab)
+    return render_template("tabs/render.html", title=f"{tab.song} - Tabs", tab=tab)
 
 
 @tabs.route("/artist/<artist_name>")
@@ -52,7 +52,12 @@ def artist(artist_name):
         else:
             tabs[t.album].append(t)
 
-    return render_template("tabs/artist.html", artist_name=artist_name, tabs=tabs)
+    return render_template(
+        "tabs/artist.html",
+        title=f"Tabs by {artist_name}",
+        artist_name=artist_name,
+        tabs=tabs,
+    )
 
 
 @tabs.route("/get-tab/<tab_id>")
@@ -118,7 +123,7 @@ def upload():
             flash("File was uploaded", "success")
             return redirect(url_for("tabs.render", tab_id=tab.id))
 
-    return render_template("tabs/upload.html", form=form)
+    return render_template("tabs/upload.html", title="Upload a new tab", form=form)
 
 
 @login_required
@@ -151,7 +156,12 @@ def edit_metadata(tab_id):
         form.song.data = tab.song
         form.track.data = tab.track
 
-    return render_template("tabs/edit-metadata.html", form=form, tab=tab)
+    return render_template(
+        "tabs/edit-metadata.html",
+        title=f"Edit metadata for {tab.song}",
+        form=form,
+        tab=tab,
+    )
 
 
 @login_required
@@ -203,4 +213,6 @@ def replace(tab_id):
 
     form = ReplaceFileForm()
 
-    return render_template("tabs/replace.html", form=form)
+    return render_template(
+        "tabs/replace.html", title=f"Upload new tab for {tab.song}", form=form
+    )

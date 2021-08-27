@@ -22,4 +22,6 @@ def settings():
 
     users = User.query.all()
 
-    return render_template("admin/settings.html", form=form, users=users)
+    return render_template(
+        "admin/settings.html", title="Admin Settings", form=form, users=users
+    )
