@@ -76,11 +76,11 @@ api.renderStarted.on(() => {
   });
 });
 
-wrapper.querySelector('.at-controls .at-print').onclick = () => {
+$('#at-print').click(function() {
   api.print();
-};
+});
 
-$('.at-wrap .at-zoom ul button').click(function() {
+$('#at-zoom ul button').click(function() {
   zoomValue = $(this).data('value');
   zoomLevel = parseInt(zoomValue) / 100;
 
@@ -88,10 +88,10 @@ $('.at-wrap .at-zoom ul button').click(function() {
   api.updateSettings();
   api.render();
 
-  $('.at-wrap .at-zoom ul button').removeClass('active');
+  $('#at-zoom ul button').removeClass('active');
 });
 
-$('.at-wrap .at-layout ul button').click(function() {
+$('#at-layout ul button').click(function() {
   value = $(this).data('value');
 
   switch (value) {
@@ -105,7 +105,7 @@ $('.at-wrap .at-layout ul button').click(function() {
   api.updateSettings();
   api.render();
 
-  $('.at-wrap .at-layout ul button').removeClass('active');
+  $('#at-layout ul button').removeClass('active');
 });
 
 const playerIndicator = wrapper.querySelector(
@@ -153,7 +153,7 @@ api.playerStateChanged.on((e) => {
 api.renderFinished.on(() => {
   // set zoom level visual
   zoomValue = parseInt(api.settings.display.scale * 100);
-  $(".at-wrap .at-zoom ul button[data-value='" + zoomValue + "']").addClass('active');
+  $("#at-zoom ul button[data-value='" + zoomValue + "']").addClass('active');
 
   // set layout mode visual
   layoutMode = api.settings.display.layoutMode
@@ -166,7 +166,7 @@ api.renderFinished.on(() => {
       layoutStr = 'page';
       break;
   }
-  $(".at-wrap .at-layout ul button[data-value='" + layoutStr + "']").addClass('active');
+  $("#at-layout ul button[data-value='" + layoutStr + "']").addClass('active');
 });
 
 function formatDuration(milliseconds) {

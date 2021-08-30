@@ -54,7 +54,7 @@
     </div>
 
     <div class="sticky-top">
-      <div class="at-controls bg-light d-flex flex-row pt-1">
+      <div class="at-controls bg-light row pt-1">
         <div class="at-controls-left me-2 ms-2 mb-2 d-flex flex-wrap align-items-center">
 
           <span class="mt-1 at-player-progress">0%</span>
@@ -67,53 +67,14 @@
             <i class="fas fa-play"></i>
           </a>
 
-          <div class="mt-1 at-song-position d-none d-lg-block ms-2 me-auto">00:00 / 00:00</div>
+          <div class="mt-1 at-song-position d-none d-lg-block ms-2">00:00 / 00:00</div>
 
-          <div class="mt-1 d-block d-lg-none ms-2">
-            ·
-          </div>
-
-          <a class="mt-1 btn btn-outline-success at-print d-none d-lg-block m2-1" title="print">
-            <i class="fas fa-print"></i>
-          </a>
-
-          <div class="mt-1 dropdown at-zoom d-block ms-2">
-            <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
-              <i class="fa fa-search"></i>
-            </button>
-            <ul class="dropdown-menu">
-              <li><button class="dropdown-item" data-value="25">25%</button></li>
-              <li><button class="dropdown-item" data-value="50">50%</button></li>
-              <li><button class="dropdown-item" data-value="75">75%</button></li>
-              <li><button class="dropdown-item" data-value="90">90%</button></li>
-              <li><button class="dropdown-item active" data-value="100">100%</button></li>
-              <li><button class="dropdown-item" data-value="110">110%</button></li>
-              <li><button class="dropdown-item" data-value="125">125%</button></li>
-              <li><button class="dropdown-item" data-value="150">150%</button></li>
-              <li><button class="dropdown-item" data-value="200">200%</button></li>
-            </select>
-          </div>
-
-          <div class="mt-1 dropdown at-layout d-none d-lg-block ms-1">
-            <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
-              <i class="fa fa-list"></i>
-            </button>
-            <ul class="dropdown-menu">
-              <li><button class="dropdown-item" data-value="horizontal">Horizontal</button></li>
-              <li><button class="dropdown-item active" data-value="page">Page</button></li>
-            </ul>
-          </div>
-
-          <div class="mt-1 dropdown at-tracks d-block ms-1">
+          <div class="mt-1 dropdown at-tracks d-block ms-auto">
             <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
               <i class="fa fa-guitar"></i>
             </button>
             <ul id="track-list-dropdown" class="dropdown-menu at-track-list">
             </ul>
-          </div>
-
-          <div class="mt-1 d-block d-lg-none ms-2">
-            ·
           </div>
 
           <button type="button" class="mt-1 ms-2 btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#player-settings">
@@ -151,7 +112,45 @@
         </div>
 
         <div class="modal-body">
-          <strong>Playback</strong>
+
+          <div class="mt-0">
+            <strong>View</strong>
+          </div>
+
+          <div class="d-flex flex-wrap">
+            <div id="at-layout" class="mt-1 me-1 dropdown">
+              <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="fa fa-list"></i>
+                Layout
+              </button>
+              <ul class="dropdown-menu">
+                <li><button class="dropdown-item" data-value="horizontal">Horizontal</button></li>
+                <li><button class="dropdown-item active" data-value="page">Page</button></li>
+              </ul>
+            </div>
+
+            <div class="mt-1 me-1 dropdown" id="at-zoom">
+              <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="fa fa-search"></i>
+                Zoom
+              </button>
+              <ul class="dropdown-menu">
+                <li><button class="dropdown-item" data-value="25">25%</button></li>
+                <li><button class="dropdown-item" data-value="50">50%</button></li>
+                <li><button class="dropdown-item" data-value="75">75%</button></li>
+                <li><button class="dropdown-item" data-value="90">90%</button></li>
+                <li><button class="dropdown-item active" data-value="100">100%</button></li>
+                <li><button class="dropdown-item" data-value="110">110%</button></li>
+                <li><button class="dropdown-item" data-value="125">125%</button></li>
+                <li><button class="dropdown-item" data-value="150">150%</button></li>
+                <li><button class="dropdown-item" data-value="200">200%</button></li>
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-2">
+            <strong>Playback</strong>
+          </div>
 
           <div class="form-check mb-2">
             <input id="ps-metronome" class="form-check-input" type="checkbox">
@@ -186,9 +185,23 @@
 
           <div>Transpose</div>
 
-          <strong>Tracks</strong>
+          <div class="mt-2">
+            <strong>Tracks</strong>
+          </div>
 
           <div>Tracklist (solo, mute, volume)</div>
+
+          <div class="mt-2">
+            <strong>Other</strong>
+          </div>
+
+          <div>
+            <a id="at-print" class="btn btn-outline-dark" title="print">
+              <i class="fas fa-print"></i>
+              Print
+            </a>
+          </div>
+
         </div>
 
         <div class="modal-footer">
