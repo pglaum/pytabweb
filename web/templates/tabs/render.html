@@ -73,19 +73,9 @@
             ·
           </div>
 
-          <a class="mt-1 btn btn-outline-success toggle at-metronome ms-2" title="metronome">
-            <i class="fas fa-drum"></i>
-          </a>
-          <a class="mt-1 btn btn-outline-success toggle at-loop d-none d-lg-block ms-1" title="loop">
-            <i class="fas fa-retweet"></i>
-          </a>
-          <a class="mt-1 btn btn-outline-success at-print d-none d-lg-block ms-1" title="print">
+          <a class="mt-1 btn btn-outline-success at-print d-none d-lg-block m2-1" title="print">
             <i class="fas fa-print"></i>
           </a>
-
-          <div class="mt-1 d-block d-lg-none ms-2">
-            ·
-          </div>
 
           <div class="mt-1 dropdown at-zoom d-block ms-2">
             <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -122,6 +112,14 @@
             </ul>
           </div>
 
+          <div class="mt-1 d-block d-lg-none ms-2">
+            ·
+          </div>
+
+          <button type="button" class="mt-1 ms-2 btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#player-settings">
+            <i class="fa fa-cogs"></i>
+          </button>
+
         </div>
       </div>
     </div>
@@ -142,6 +140,66 @@
       </button>
     </li>
   </template>
+
+  <div class="modal fade" id="player-settings" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Player settings</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal">
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <strong>Playback</strong>
+
+          <div class="form-check mb-2">
+            <input id="ps-metronome" class="form-check-input" type="checkbox">
+            <label for="ps-metronome" class="form-check-label">Metronome</label>
+          </div>
+
+          <div class="form-check mb-2">
+            <input id="ps-loop" class="form-check-input" type="checkbox">
+            <label for="ps-loop" class="form-check-label">Loop</label>
+          </div>
+
+
+          <div>
+            <div>
+              Playback speed
+            </div>
+            <select id="ps-speed" class="form-select">
+              <option value="50">50%</option>
+              <option value="60">60%</option>
+              <option value="70">70%</option>
+              <option value="80">80%</option>
+              <option value="90">90%</option>
+              <option value="100" selected>100%</option>
+              <option value="110">110%</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="ps-custom-speed" class="form-label">Custom speed</label>
+            <input id="ps-custom-speed" type="number" value="100" class="form-control">
+          </div>
+
+          <div>Transpose</div>
+
+          <strong>Tracks</strong>
+
+          <div>Tracklist (solo, mute, volume)</div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal">
+            <i class="fa fa-check"></i>
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 {% endblock %}
 

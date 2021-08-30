@@ -76,24 +76,6 @@ api.renderStarted.on(() => {
   });
 });
 
-const metronome = wrapper.querySelector('.at-controls .at-metronome');
-metronome.onclick = () => {
-  metronome.classList.toggle('btn-success');
-  metronome.classList.toggle('btn-outline-success');
-  if (metronome.classList.contains('btn-success')) {
-    api.metronomeVolume = 1;
-  } else {
-    api.metronomeVolume = 0;
-  }
-};
-
-const loop = wrapper.querySelector('.at-controls .at-loop');
-loop.onclick = () => {
-  loop.classList.toggle('btn-success');
-  loop.classList.toggle('btn-outline-success');
-  api.isLooping = loop.classList.contains('btn-success');
-};
-
 wrapper.querySelector('.at-controls .at-print').onclick = () => {
   api.print();
 };
@@ -209,4 +191,33 @@ api.playerPositionChanged.on((e) => {
 
   songPosition.innerText =
     formatDuration(e.currentTime) + " / " + formatDuration(e.endTime);
+});
+
+// settings modal
+$('#ps-metronome').change(function() {
+  if (this.checked) {
+    api.metronomeVolume = 1;
+  } else {
+    api.metronomeVolume = 0;
+  }
+});
+
+$('#ps-loop').change(function() {
+  if (this.checked) {
+    api.isLooping = true;
+  } else {
+    api.isLooping = false;
+  }
+});
+
+$('#ps-speed').change(function() {
+  speed = parseInt($(this).val());
+  api.playbackSpeed = speed / 100;
+  $('#ps-custom-speed').val(speed);
+});
+
+$('#ps-custom-speed').change(function() {
+  speed = parseInt($(this).val());
+  api.playbackSpeed = speed / 100;
+  $('#ps-speed').val(speed);
 });
