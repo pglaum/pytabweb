@@ -3,7 +3,7 @@ Blueprint for some general routes.
 
 """
 
-from flask import Blueprint, render_template
+from flask import Blueprint, g, render_template
 from models.tabs import GuitarTab
 from sqlalchemy import desc
 from web.forms.tabs import SearchForm
@@ -31,9 +31,7 @@ def index():
 @main.route("/search")
 def search():
 
-    form = SearchForm()
-
-    query = form.q.data
+    query = g.search_form.q.data
 
     results = []
     if query:
@@ -42,7 +40,6 @@ def search():
     return render_template(
         "main/search.html",
         title="Guitar Tabs - Search",
-        form=form,
         query=query,
         results=results,
     )

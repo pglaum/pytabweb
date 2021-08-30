@@ -81,7 +81,7 @@ def upload():
     if not current_user.is_authenticated:
 
         flash("You are not logged in.", "danger")
-        return redirect(url_for("main.index"))
+        return redirect(url_for("auth.login"))
 
     form = UploadForm()
 
@@ -167,6 +167,10 @@ def edit_metadata(tab_id):
 @login_required
 @tabs.route("/delete/<tab_id>")
 def delete(tab_id):
+
+    if not current_user.is_authenticated or not current_user.is_admin:
+        flash("Only an admin can delete tabs.", "danger")
+        return redirect(url_for("tabs.render", tab_id=tab_id))
 
     tab = GuitarTab.query.filter_by(id=tab_id).first()
     if not tab:

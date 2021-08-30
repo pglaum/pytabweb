@@ -44,12 +44,18 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
           </li>
+          <li class="nav-item">
+            <a href="{{ url_for('tabs.upload') }}" class="nav-link">
+              <i class="fa fa-file-upload"></i>
+              Upload new tab
+            </a>
+          </li>
         </ul>
         {% if current_user.is_authenticated %}
           <div class="d-flex mt-2 mt-lg-0">
-            <a class="btn btn-outline-primary me-2" href="#">
+            {# <a class="btn btn-outline-primary me-2" href="#">
               <i class="fa fa-cogs" title="User settings"></i>
-            </a>
+            </a> #}
             {% if current_user.is_admin %}
               <a class="btn btn-outline-primary me-2" href="{{ url_for('admin.settings') }}">
                 <i class="fa fa-toolbox" title="Admin settings"></i>
@@ -74,6 +80,22 @@
       </div>
     </div>
   </nav>
+
+  <div class="bg-light">
+    <div class="container pb-4 pt-4">
+
+      <form class="form" action="{{ url_for('main.search') }}" method="get" novalidate>
+        <div class="input-group" style="width: auto;">
+          {{ g.search_form.q(class='form-control', placeholder='Search', style="max-width: 25rem;") }}
+          <button type="submit" class="btn btn-outline-secondary" style="min-width: 6rem;">
+            <i class="fa fa-search"></i>
+            Search
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
 
   <div class="container mt-3">
 
