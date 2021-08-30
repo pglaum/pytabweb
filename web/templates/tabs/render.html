@@ -162,7 +162,6 @@
             <label for="ps-loop" class="form-check-label">Loop</label>
           </div>
 
-
           <div>
             <div>
               Playback speed
@@ -183,13 +182,26 @@
             <input id="ps-custom-speed" type="number" value="100" class="form-control">
           </div>
 
-          <div>Transpose</div>
+          <div>
+            <div>
+              Transpose
+            </div>
+            <select id="ps-transpose" class="form-select">
+              <option value="-3">-3</option>
+              <option value="-2">-2</option>
+              <option value="-1">-1</option>
+              <option value="0" selected>0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+          </div>
 
           <div class="mt-2">
             <strong>Tracks</strong>
           </div>
 
-          <div>Tracklist (solo, mute, volume)</div>
+          <div id="ps-track-list"></div>
 
           <div class="mt-2">
             <strong>Other</strong>

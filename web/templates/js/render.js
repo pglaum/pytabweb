@@ -150,6 +150,7 @@ api.playerStateChanged.on((e) => {
   }
 });
 
+var tracklistSetup = false;
 api.renderFinished.on(() => {
   // set zoom level visual
   zoomValue = parseInt(api.settings.display.scale * 100);
@@ -167,6 +168,54 @@ api.renderFinished.on(() => {
       break;
   }
   $("#at-layout ul button[data-value='" + layoutStr + "']").addClass('active');
+
+  // set up track list
+  if (!tracklistSetup) {
+    tracks = api.score.tracks;
+    for (i = 0; i < tracks.length; i++) {
+      var html = `<div class="d-flex flex-wrap align-items-center mt-1">
+        <div class="me-3" style="max-width: 6rem;"><em>${tracks[i].name}</em></div>
+        <div class="me-1"><i class="fa fa-volume-up"></i></div>
+        <input type="range" class="form-range track-volume flex-fill" data-trackid="${i}" min="0" max="1.2" step="0.1" value="1" style="width: auto;">
+        <div class="ms-3 btn-group" role="group">
+          <button data-trackid="${i}" class="solo-button btn btn-outline-warning btn-sm">S</button>
+          <button data-trackid="${i}" class="mute-button btn btn-outline-danger btn-sm">M</button>
+        </div>
+      </div>`;
+      $('#ps-track-list').append(html);
+    }
+
+    $('.solo-button').click(function() {
+      trackNo = $(this).data('trackid');
+      track = api.score.tracks[trackNo];
+      soloState = $(this).hasClass('btn-outline-warning');
+
+      $(this).toggleClass('btn-outline-warning');
+      $(this).toggleClass('btn-warning');
+
+      api.changeTrackSolo([track], soloState);
+    });
+
+    $('.mute-button').click(function() {
+      trackNo = $(this).data('trackid');
+      track = api.score.tracks[trackNo];
+      soloState = $(this).hasClass('btn-outline-danger');
+
+      $(this).toggleClass('btn-outline-danger');
+      $(this).toggleClass('btn-danger');
+
+      api.changeTrackMute([track], soloState);
+    });
+
+    $('.track-volume').click(function() {
+      trackNo = $(this).data('trackid');
+      track = api.score.tracks[trackNo];
+
+      api.changeTrackVolume([track], $(this).val());
+    });
+
+    tracklistSetup = true;
+  }
 });
 
 function formatDuration(milliseconds) {
@@ -220,4 +269,9 @@ $('#ps-custom-speed').change(function() {
   speed = parseInt($(this).val());
   api.playbackSpeed = speed / 100;
   $('#ps-speed').val(speed);
+});
+
+$('#ps-transpose').change(function() {
+  transpose = parseInt($(this).val());
+  api.settings.notation.transpositionPitches = [transpose];
 });
