@@ -69,26 +69,18 @@ api.renderStarted.on(() => {
   const trackItems = trackList.querySelectorAll('.at-track');
   trackItems.forEach((trackItem) => {
     if (tracks.has(trackItem.track.index)) {
-      trackItem.classList.add('btn-secondary');
-      trackItem.classList.remove('btn-outline-secondary');
+      trackItem.firstElementChild.classList.add('active');
     } else {
-      trackItem.classList.add('btn-outline-secondary');
-      trackItem.classList.remove('btn-secondary');
+      trackItem.firstElementChild.classList.remove('active');
     }
   });
 });
 
-// Not used currently
-// api.scoreLoaded.on((score) => {
-//   wrapper.querySelector('.at-song-title').innerText = score.title;
-//   wrapper.querySelector('.at-song-artist').innerText = score.artist;
-// });
-
 const metronome = wrapper.querySelector('.at-controls .at-metronome');
 metronome.onclick = () => {
-  metronome.classList.toggle('btn-dark');
-  metronome.classList.toggle('btn-outline-dark');
-  if (metronome.classList.contains('btn-dark')) {
+  metronome.classList.toggle('btn-success');
+  metronome.classList.toggle('btn-outline-success');
+  if (metronome.classList.contains('btn-success')) {
     api.metronomeVolume = 1;
   } else {
     api.metronomeVolume = 0;
@@ -97,26 +89,30 @@ metronome.onclick = () => {
 
 const loop = wrapper.querySelector('.at-controls .at-loop');
 loop.onclick = () => {
-  loop.classList.toggle('btn-dark');
-  loop.classList.toggle('btn-outline-dark');
-  api.isLooping = loop.classList.contains('btn-dark');
+  loop.classList.toggle('btn-success');
+  loop.classList.toggle('btn-outline-success');
+  api.isLooping = loop.classList.contains('btn-success');
 };
 
 wrapper.querySelector('.at-controls .at-print').onclick = () => {
   api.print();
 };
 
-const zoom = wrapper.querySelector('.at-controls .at-zoom select');
-zoom.onchange = () => {
-  const zoomLevel = parseInt(zoom.value) / 100;
+$('.at-wrap .at-zoom ul button').click(function() {
+  zoomValue = $(this).data('value');
+  zoomLevel = parseInt(zoomValue) / 100;
+
   api.settings.display.scale = zoomLevel;
   api.updateSettings();
   api.render();
-};
 
-const layout = wrapper.querySelector('.at-controls .at-layout select');
-layout.onchange = () => {
-  switch (layout.value) {
+  $('.at-wrap .at-zoom ul button').removeClass('active');
+});
+
+$('.at-wrap .at-layout ul button').click(function() {
+  value = $(this).data('value');
+
+  switch (value) {
     case 'horizontal':
       api.settings.display.layoutMode = alphaTab.LayoutMode.Horizontal;
       break;
@@ -126,7 +122,9 @@ layout.onchange = () => {
   }
   api.updateSettings();
   api.render();
-};
+
+  $('.at-wrap .at-layout ul button').removeClass('active');
+});
 
 const playerIndicator = wrapper.querySelector(
   '.at-controls .at-player-progress'
@@ -168,6 +166,25 @@ api.playerStateChanged.on((e) => {
     icon.classList.remove("fa-pause");
     icon.classList.add("fa-play");
   }
+});
+
+api.renderFinished.on(() => {
+  // set zoom level visual
+  zoomValue = parseInt(api.settings.display.scale * 100);
+  $(".at-wrap .at-zoom ul button[data-value='" + zoomValue + "']").addClass('active');
+
+  // set layout mode visual
+  layoutMode = api.settings.display.layoutMode
+  layoutStr = ''
+  switch (layoutMode) {
+    case alphaTab.LayoutMode.Horizontal:
+      layoutStr = 'horizontal';
+      break;
+    case alphaTab.LayoutMode.Page:
+      layoutStr = 'page';
+      break;
+  }
+  $(".at-wrap .at-layout ul button[data-value='" + layoutStr + "']").addClass('active');
 });
 
 function formatDuration(milliseconds) {
