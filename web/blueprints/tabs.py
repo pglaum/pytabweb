@@ -16,7 +16,7 @@ from flask import (
 )
 from flask_login import current_user, login_required
 from hashlib import sha256
-from models.tabs import GuitarTab
+from models.tabs import Tab, TabFile
 from web import app, db
 from web.forms.tabs import EditForm, ReplaceFileForm, UploadForm
 import json
@@ -28,7 +28,7 @@ tabs = Blueprint("tabs", __name__)
 @tabs.route("/render/<tab_id>")
 def render(tab_id):
 
-    tab = GuitarTab.query.filter_by(id=tab_id).first()
+    tab = Tab.query.filter_by(id=tab_id).first()
     if not tab:
         flash("Tab not found.", "danger")
         return redirect(url_for("main.index"))
@@ -72,7 +72,7 @@ def render(tab_id):
 @tabs.route("/artist/<artist_name>")
 def artist(artist_name):
 
-    tabs_ = GuitarTab.query.filter_by(band=artist_name).order_by(GuitarTab.track).all()
+    tabs_ = Tab.query.filter_by(band=artist_name).order_by(Tab.track).all()
 
     tabs = {}
     for t in tabs_:
@@ -93,11 +93,15 @@ def artist(artist_name):
 @tabs.route("/get-tab/<tab_id>")
 def get_tab(tab_id):
 
-    tab = GuitarTab.query.filter_by(id=tab_id).first()
+    tab = Tab.query.filter_by(id=tab_id).first()
     if not tab:
         return "Not Found", 404
 
-    filename = os.path.join(app.config.get("DATA_DIR"), tab.sha256 + tab.ext)
+    tabfile = TabFile.query.get(tab.fileid)
+    if not tabfile:
+        return "Not Found", 404
+
+    filename = os.path.join(app.config.get("DATA_DIR"), tabfile.sha256 + tabfile.ext)
     if not os.path.isfile(filename):
         return "Not Found", 404
 
@@ -124,34 +128,33 @@ def upload():
 
         data = f.stream.read()
         digest = sha256(data).hexdigest()
-        existing = GuitarTab.query.filter_by(sha256=digest).first()
 
-        if existing:
+        ext = os.path.splitext(f.filename)[1]
 
-            flash("This file already exists", "warning")
-            return redirect(url_for("tabs.render", tab_id=existing.id))
+        tab = Tab(
+            form.band.data,
+            form.album.data,
+            form.song.data,
+            form.track.data,
+        )
+        db.session.add(tab)
+        db.session.commit()
 
-        else:
+        tabfile = TabFile(digest, ext, tab.id)
+        db.session.add(tabfile)
+        db.session.commit()
 
-            ext = os.path.splitext(f.filename)[1]
-            tab = GuitarTab(
-                digest,
-                ext,
-                form.band.data,
-                form.album.data,
-                form.song.data,
-                form.track.data,
-            )
+        tab.fileid = tabfile.id
+        db.session.commit()
 
-            filename = os.path.join(app.config.get("DATA_DIR"), tab.sha256 + tab.ext)
-            with open(filename, "wb") as f:
-                f.write(data)
+        filename = os.path.join(
+            app.config.get("DATA_DIR"), tabfile.sha256 + tabfile.ext
+        )
+        with open(filename, "wb") as f:
+            f.write(data)
 
-            db.session.add(tab)
-            db.session.commit()
-
-            flash("File was uploaded", "success")
-            return redirect(url_for("tabs.render", tab_id=tab.id))
+        flash("File was uploaded", "success")
+        return redirect(url_for("tabs.render", tab_id=tab.id))
 
     return render_template("tabs/upload.html", title="Upload a new tab", form=form)
 
@@ -160,7 +163,7 @@ def upload():
 @tabs.route("/edit-metadata/<tab_id>", methods=["GET", "POST"])
 def edit_metadata(tab_id):
 
-    tab = GuitarTab.query.filter_by(id=tab_id).first()
+    tab = Tab.query.filter_by(id=tab_id).first()
     if not tab:
         flash("Tab not found.", "danger")
         return redirect(url_for("main.index"))
@@ -198,11 +201,13 @@ def edit_metadata(tab_id):
 @tabs.route("/delete/<tab_id>")
 def delete(tab_id):
 
+    # NOTE: tab files to not currently get deleted!
+
     if not current_user.is_authenticated or not current_user.is_admin:
         flash("Only an admin can delete tabs.", "danger")
         return redirect(url_for("tabs.render", tab_id=tab_id))
 
-    tab = GuitarTab.query.filter_by(id=tab_id).first()
+    tab = Tab.query.filter_by(id=tab_id).first()
     if not tab:
         flash("Tab not found.", "danger")
         return redirect(url_for("main.index"))
@@ -217,16 +222,21 @@ def delete(tab_id):
 @tabs.route("/download_gp/<tab_id>")
 def download_gp(tab_id):
 
-    tab = GuitarTab.query.filter_by(id=tab_id).first()
+    tab = Tab.query.filter_by(id=tab_id).first()
     if not tab:
         flash("Tab not found.", "danger")
         return redirect(url_for("main.index"))
 
-    filename = os.path.join(app.config.get("DATA_DIR"), tab.sha256 + tab.ext)
+    tabfile = TabFile.query.get(tab.fileid)
+    if not tabfile:
+        flash("Tab file not found.", "danger")
+        return redirect(url_for("main.index"))
+
+    filename = os.path.join(app.config.get("DATA_DIR"), tabfile.sha256 + tabfile.ext)
     if not os.path.isfile(filename):
         return "Not Found", 404
 
-    attachment_filename = f"{tab.band} - {tab.song}{tab.ext}"
+    attachment_filename = f"{tab.band} - {tab.song}{tabfile.ext}"
 
     return send_file(
         filename, as_attachment=True, attachment_filename=attachment_filename
@@ -240,9 +250,14 @@ def replace(tab_id):
     # TODO
 
     # upload a new guitar pro file for this tab
-    tab = GuitarTab.query.filter_by(id=tab_id).first()
+    tab = Tab.query.filter_by(id=tab_id).first()
     if not tab:
         flash("Tab not found.", "danger")
+        return redirect(url_for("main.index"))
+
+    tabfile = TabFile.query.get(tab.fileid)
+    if not tabfile:
+        flash("Tab file not found.", "danger")
         return redirect(url_for("main.index"))
 
     form = ReplaceFileForm()

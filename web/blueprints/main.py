@@ -4,7 +4,7 @@ Blueprint for some general routes.
 """
 
 from flask import Blueprint, g, render_template
-from models.tabs import GuitarTab
+from models.tabs import Tab
 from sqlalchemy import desc
 from web.forms.tabs import SearchForm
 from web.helpers import search_tabs
@@ -15,10 +15,8 @@ main = Blueprint("main", __name__)
 @main.route("/")
 def index():
 
-    most_viewed = GuitarTab.query.order_by(desc(GuitarTab.views)).limit(5).all()
-    recently_uploaded = (
-        GuitarTab.query.order_by(desc(GuitarTab.date_added)).limit(5).all()
-    )
+    most_viewed = Tab.query.order_by(desc(Tab.views)).limit(5).all()
+    recently_uploaded = Tab.query.order_by(desc(Tab.date_added)).limit(5).all()
 
     return render_template(
         "main/index.html",

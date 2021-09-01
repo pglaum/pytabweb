@@ -1,5 +1,5 @@
 from flask import flash, redirect, request, url_for
-from models.tabs import GuitarTab
+from models.tabs import Tab
 from sqlalchemy import or_
 from werkzeug.urls import url_parse
 
@@ -19,11 +19,11 @@ def search_tabs(query):
     results = []
 
     query = f"%{query}%"
-    results = GuitarTab.query.filter(
+    results = Tab.query.filter(
         or_(
-            GuitarTab.band.like(query),
-            GuitarTab.album.like(query),
-            GuitarTab.song.like(query),
+            Tab.band.like(query),
+            Tab.album.like(query),
+            Tab.song.like(query),
         )
     ).all()
 

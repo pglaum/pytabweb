@@ -1,7 +1,7 @@
 from flask import Blueprint, g, redirect, render_template, url_for
 from datetime import datetime
 from models.user import User
-from pytz import timezone
+from dateutil import tz
 from web import configuration
 from web.forms.admin import AdminForm
 import dateutil.parser
@@ -36,9 +36,8 @@ def settings():
         if "render" in logs:
             for entry in logs["render"]:
                 t = dateutil.parser.isoparse(entry["time"])
-                tz = timezone("UTC")
-                t = t.replace(tzinfo=tz)
-                entry["time"] = t.strftime("%Y-%m-%d %H:%M:%S")
+                t = t.replace(tzinfo=tz.tzutc())
+                entry["time"] = t.astimezone(tz.tzlocal()).strftime("%Y-%m-%d %H:%M:%S")
 
         logs["render"].reverse()
 
