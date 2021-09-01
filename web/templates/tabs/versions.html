@@ -44,7 +44,7 @@
               </span>
             {% endif %}
             {% if current_user.is_admin and tf.id != tab.fileid %}
-              <a class="btn btn-danger" href="{{ url_for('tabs.delete_file', tab_id=tab.id, file_id=tf.id) }}" target="blank">
+              <a class="btn btn-danger" href="{{ url_for('tabs.delete_file', tab_id=tab.id, file_id=tf.id) }}">
                 <i class="fa fa-trash"></i>
                 Delete
               </a>
