@@ -17,6 +17,7 @@ class UploadForm(FlaskForm):
 class ReplaceFileForm(FlaskForm):
 
     upload_file = FileField("Guitar Pro File", validators=[DataRequired()])
+    comment = StringField("Update Comment", default="updated version")
 
 
 class EditForm(FlaskForm):

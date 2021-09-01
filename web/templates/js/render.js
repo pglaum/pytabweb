@@ -9,7 +9,7 @@ const settings = {
     staveProfile: 'tab',
     stretchForce: 0.5,
   },
-  file: "{{ url_for('tabs.get_tab', tab_id=tab.id) }}",
+  file: "{{ url_for('tabs.get_tab', tab_id=tab.id, file_id=tab.fileid) }}",
   notation: {
     elements: {
       ScoreTitle: false,
@@ -174,7 +174,7 @@ api.renderFinished.on(() => {
     tracks = api.score.tracks;
     for (i = 0; i < tracks.length; i++) {
       var html = `<div class="d-flex flex-wrap align-items-center mt-1">
-        <div class="me-3" style="max-width: 6rem;"><em>${tracks[i].name}</em></div>
+        <div class="me-3" style="width: 6rem;"><em>${tracks[i].name}</em></div>
         <div class="me-1"><i class="fa fa-volume-up"></i></div>
         <input type="range" class="form-range track-volume flex-fill" data-trackid="${i}" min="0" max="1.2" step="0.1" value="1" style="width: auto;">
         <div class="ms-3 btn-group" role="group">

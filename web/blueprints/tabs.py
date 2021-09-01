@@ -26,7 +26,8 @@ tabs = Blueprint("tabs", __name__)
 
 
 @tabs.route("/render/<tab_id>")
-def render(tab_id):
+@tabs.route("/render/<tab_id>/<file_id>")
+def render(tab_id, file_id=None):
 
     tab = Tab.query.filter_by(id=tab_id).first()
     if not tab:
@@ -66,6 +67,9 @@ def render(tab_id):
     with open(g.config.get("log_file"), "w") as f:
         f.write(json.dumps(logs))
 
+    if file_id:
+        tab.fileid = file_id
+
     return render_template("tabs/render.html", title=f"{tab.song} - Tabs", tab=tab)
 
 
@@ -91,19 +95,23 @@ def artist(artist_name):
 
 
 @tabs.route("/get-tab/<tab_id>")
-def get_tab(tab_id):
+@tabs.route("/get-tab/<tab_id>/<file_id>")
+def get_tab(tab_id, file_id=None):
 
     tab = Tab.query.filter_by(id=tab_id).first()
     if not tab:
-        return "Not Found", 404
+        return "Not Found (tab)", 404
 
-    tabfile = TabFile.query.get(tab.fileid)
+    if not file_id:
+        file_id = tab.fileid
+
+    tabfile = TabFile.query.get(file_id)
     if not tabfile:
-        return "Not Found", 404
+        return "Not Found (tabfile)", 404
 
     filename = os.path.join(app.config.get("DATA_DIR"), tabfile.sha256 + tabfile.ext)
     if not os.path.isfile(filename):
-        return "Not Found", 404
+        return "Not Found (file)", 404
 
     return send_file(filename)
 
@@ -220,14 +228,18 @@ def delete(tab_id):
 
 
 @tabs.route("/download_gp/<tab_id>")
-def download_gp(tab_id):
+@tabs.route("/download_gp/<tab_id>/<file_id>")
+def download_gp(tab_id, file_id=None):
 
     tab = Tab.query.filter_by(id=tab_id).first()
     if not tab:
         flash("Tab not found.", "danger")
         return redirect(url_for("main.index"))
 
-    tabfile = TabFile.query.get(tab.fileid)
+    if not file_id:
+        file_id = tab.fileid
+
+    tabfile = TabFile.query.get(file_id)
     if not tabfile:
         flash("Tab file not found.", "danger")
         return redirect(url_for("main.index"))
@@ -244,24 +256,107 @@ def download_gp(tab_id):
 
 
 @login_required
-@tabs.route("/replace/<tab_id>")
-def replace(tab_id):
+@tabs.route("/versions/<tab_id>")
+def versions(tab_id):
 
-    # TODO
-
-    # upload a new guitar pro file for this tab
     tab = Tab.query.filter_by(id=tab_id).first()
     if not tab:
         flash("Tab not found.", "danger")
         return redirect(url_for("main.index"))
 
-    tabfile = TabFile.query.get(tab.fileid)
-    if not tabfile:
-        flash("Tab file not found.", "danger")
-        return redirect(url_for("main.index"))
+    tabfiles = TabFile.query.filter_by(tabid=tab.id)
 
     form = ReplaceFileForm()
 
     return render_template(
-        "tabs/replace.html", title=f"Upload new tab for {tab.song}", form=form
+        "tabs/versions.html",
+        title=f"Upload new tab for {tab.song}",
+        form=form,
+        tab=tab,
+        tabfiles=tabfiles,
     )
+
+
+@login_required
+@tabs.route("/upload-file/<tab_id>", methods=["POST"])
+def upload_file(tab_id):
+
+    tab = Tab.query.filter_by(id=tab_id).first()
+    if not tab:
+        flash("Tab not found.", "danger")
+        return redirect(url_for("main.index", tab_id=tab.id))
+
+    form = ReplaceFileForm()
+
+    f = request.files.get("upload_file")
+    if not f:
+        flash("No file was selected.", "warning")
+        return redirect(url_for("tabs.versions", tab_id=tab.id))
+
+    data = f.stream.read()
+    digest = sha256(data).hexdigest()
+
+    ext = os.path.splitext(f.filename)[1]
+
+    tabfile = TabFile(digest, ext, tab.id, form.comment.data)
+    db.session.add(tabfile)
+    db.session.commit()
+
+    tab.fileid = tabfile.id
+    db.session.commit()
+
+    filename = os.path.join(app.config.get("DATA_DIR"), tabfile.sha256 + tabfile.ext)
+    with open(filename, "wb") as f:
+        f.write(data)
+
+    flash("File was uploaded.", "success")
+    return redirect(url_for("tabs.render", tab_id=tab.id))
+
+
+@login_required
+@tabs.route("/delete-file/<tab_id>/<file_id>")
+def delete_file(tab_id, file_id):
+
+    if current_user.is_authenticated and not current_user.is_admin:
+        flash("Only admins can delete files", "warning")
+        return redirect(url_for("tabs.versions", tab_id=tab_id))
+
+    tab = Tab.query.filter_by(fileid=file_id).all()
+    if tab:
+        flash("Cannot delete active tab file", "warning")
+        return redirect(url_for("tabs.versions", tab_id=tab_id))
+
+    tabfile = TabFile.query.get(file_id)
+    if not tabfile:
+        flash("Tab file not found", "warning")
+        return redirect(url_for("tabs.versions", tab_id=tab_id))
+
+    filename = os.path.join(app.config.get("DATA_DIR"), tabfile.sha256 + tabfile.ext)
+    os.remove(filename)
+
+    db.session.delete(tabfile)
+    db.session.commit()
+
+    flash("Tab file was deleted", "success")
+    return redirect(url_for("tabs.versions", tab_id=tab_id))
+
+
+@login_required
+@tabs.route('/activate-file/<tab_id>/<file_id>')
+def activate_file(tab_id, file_id):
+
+    tab = Tab.query.filter_by(id=tab_id).first()
+    if not tab:
+        flash("Tab not found.", "danger")
+        return redirect(url_for("tabs.versions", tab_id=tab_id))
+
+    tabfile = TabFile.query.get(file_id)
+    if not tabfile:
+        flash("Tab file not found.", "danger")
+        return redirect(url_for("tabs.versions", tab_id=tab_id))
+
+    tab.fileid = tabfile.id
+    db.session.commit()
+
+    flash("File was activated", "success")
+    return redirect(url_for("tabs.versions", tab_id=tab_id))

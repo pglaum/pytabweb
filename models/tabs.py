@@ -42,12 +42,14 @@ class TabFile(db.Model):
     ext = db.Column(db.Text)
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
     tabid = db.Column(db.Integer)
+    comment = db.Column(db.Text)
 
-    def __init__(self, sha256, ext, tabid):
+    def __init__(self, sha256, ext, tabid, comment="initial version"):
 
         self.sha256 = sha256
         self.ext = ext
         self.tabid = tabid
+        self.comment = comment
 
     def getname(self):
 
