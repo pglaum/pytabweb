@@ -53,6 +53,9 @@
         </ul>
         {% if current_user.is_authenticated %}
           <div class="d-flex mt-2 mt-lg-0">
+            <a class="btn btn-outline-primary me-2" href="{{ url_for('main.favorites') }}">
+              <i class="fa fa-star" title="Favorites"></i>
+            </a>
             {# <a class="btn btn-outline-primary me-2" href="#">
               <i class="fa fa-cogs" title="User settings"></i>
             </a> #}

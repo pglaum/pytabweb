@@ -54,3 +54,15 @@ class TabFile(db.Model):
     def getname(self):
 
         return f"{su.enbase(self.id, 1)}{self.ext}"
+
+
+class Favorite(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer)
+    tab_id = db.Column(db.Integer)
+
+    def __init__(self, user_id, tab_id):
+
+        self.user_id = user_id
+        self.tab_id = tab_id

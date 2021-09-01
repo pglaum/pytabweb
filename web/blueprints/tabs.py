@@ -16,9 +16,10 @@ from flask import (
 )
 from flask_login import current_user, login_required
 from hashlib import sha256
-from models.tabs import Tab, TabFile
+from models.tabs import Favorite, Tab, TabFile
 from web import app, db
 from web.forms.tabs import EditForm, ReplaceFileForm, UploadForm
+from web.helpers import make_redirect
 import json
 import os
 
@@ -70,7 +71,15 @@ def render(tab_id, file_id=None):
     if file_id:
         tab.fileid = file_id
 
-    return render_template("tabs/render.html", title=f"{tab.song} - Tabs", tab=tab)
+    fav = Favorite.query.filter_by(user_id=current_user.id, tab_id=tab.id).all()
+    if fav:
+        is_favorite = True
+    else:
+        is_favorite = False
+
+    return render_template("tabs/render.html", title=f"{tab.song} - Tabs",
+                           tab=tab,
+                           is_favorite=is_favorite)
 
 
 @tabs.route("/artist/<artist_name>")
@@ -86,11 +95,17 @@ def artist(artist_name):
         else:
             tabs[t.album].append(t)
 
+    favs = []
+    if current_user.is_authenticated:
+        favorites = Favorite.query.filter_by(user_id=current_user.id).all()
+        favs = [f.tab_id for f in favorites]
+
     return render_template(
         "tabs/artist.html",
         title=f"Tabs by {artist_name}",
         artist_name=artist_name,
         tabs=tabs,
+        favs=favs
     )
 
 
@@ -360,3 +375,39 @@ def activate_file(tab_id, file_id):
 
     flash("File was activated", "success")
     return redirect(url_for("tabs.versions", tab_id=tab_id))
+
+
+@login_required
+@tabs.route('/fav/<tab_id>')
+def fav_tab(tab_id):
+
+    tab = Tab.query.filter_by(id=tab_id).first()
+    if not tab:
+        flash("Tab not found.", "danger")
+        return redirect(url_for("tabs.render", tab_id=tab_id))
+
+    fav = Favorite.query.filter_by(user_id=current_user.id, tab_id=tab_id).all()
+    if not fav:
+        fav = Favorite(current_user.id, tab_id)
+        db.session.add(fav)
+        db.session.commit()
+
+    return make_redirect()
+
+
+@login_required
+@tabs.route('/unfav/<tab_id>')
+def unfav_tab(tab_id):
+
+    tab = Tab.query.filter_by(id=tab_id).first()
+    if not tab:
+        flash("Tab not found.", "danger")
+        return redirect(url_for("tabs.render", tab_id=tab_id))
+
+    fav = Favorite.query.filter_by(user_id=current_user.id,
+                                   tab_id=tab_id).all()
+    if fav:
+        db.session.delete(fav[0])
+        db.session.commit()
+
+    return make_redirect()

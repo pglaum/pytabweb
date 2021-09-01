@@ -12,6 +12,7 @@
           <li class="list-group-item">
             <a href="{{ url_for('tabs.render', tab_id=t.id) }}">
               {{ t.band }} · {{ t.song }}
+              {% if t.id in favs %}<i class="fa fa-star"></i>{% endif %}
             </a>
           </li>
         {% endfor %}
@@ -26,6 +27,7 @@
           <li class="list-group-item">
             <a href="{{ url_for('tabs.render', tab_id=t.id) }}">
               {{ t.band }} · {{ t.song }}
+              {% if t.id in favs %}<i class="fa fa-star"></i>{% endif %}
             </a>
           </li>
         {% endfor %}

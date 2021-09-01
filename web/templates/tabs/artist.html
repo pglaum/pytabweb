@@ -14,6 +14,7 @@
             <li>
               <a href="{{ url_for('tabs.render', tab_id=y.id) }}">
                 {{ y.song }}
+                {% if y.id in favs %}<i class="fa fa-star"></i>{% endif %}
               </a>
             </li>
           {% endfor %}

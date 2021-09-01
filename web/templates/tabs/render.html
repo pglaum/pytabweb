@@ -15,22 +15,39 @@
     <a href="{{ url_for('tabs.artist', artist_name=tab.band) }}">{{ tab.band }}</a>
     ·
     {{ tab.song }}
+    {% if is_favorite %}<i class="fa fa-star"></i>{% endif %}
   </h3>
 
   <div class="mb-3">
 
     {% if current_user.is_authenticated %}
+      {% if is_favorite %}
+        <a class="btn btn-secondary me-2 mt-2"
+           href="{{ url_for('tabs.unfav_tab', tab_id=tab.id, next=url_for('tabs.render', tab_id=tab.id)) }}">
+          <i class="far fa-star"></i>
+          Unfavorite
+        </a>
+      {% else %}
+        <a class="btn btn-outline-secondary me-2 mt-2"
+           href="{{ url_for('tabs.fav_tab', tab_id=tab.id, next=url_for('tabs.render', tab_id=tab.id)) }}">
+          <i class="fa fa-star"></i>
+          Favorite
+        </a>
+      {% endif %}
+
       <a href="{{ url_for('tabs.versions', tab_id=tab.id) }}"
         class="btn btn-outline-secondary me-2 mt-2">
         <i class="fa fa-code-branch"></i>
         Versions
       </a>
+
       <a href="{{ url_for('tabs.edit_metadata', tab_id=tab.id) }}"
         class="btn btn-outline-secondary me-2 mt-2">
         <i class="fa fa-edit"></i>
         Edit metadata
       </a>
     {% endif %}
+
     <a href="{{ url_for('tabs.download_gp', tab_id=tab.id, file_id=tab.fileid) }}"
        class="btn btn-outline-success me-2 mt-2">
       <i class="fa fa-file-download"></i>

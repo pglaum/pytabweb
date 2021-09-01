@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <h3>Favorites</h3>
+
+  {% if not favs %}
+
+    <div class="alert alert-info">
+      You have not favorited any tabs yet..
+    </div>
+
+  {% else %}
+
+    <ul class="list-group">
+      {% for fav in fav_tabs %}
+        <li class="list-group-item">
+          <a href="{{ url_for('tabs.render', tab_id=fav.id) }}">
+            {{ fav.band }} · {{ fav.song }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+
+  {% endif %}
+
+{% endblock %}

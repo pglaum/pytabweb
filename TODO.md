@@ -4,4 +4,3 @@
   - fallbacks
   - see <https://www.alphatab.net/docs/guides/multiple-soundfonts>
 - favorites
-- revisions
