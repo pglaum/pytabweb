@@ -3,8 +3,10 @@ Blueprint for guitar tab routes
 
 """
 
+from datetime import datetime
 from flask import (
     Blueprint,
+    g,
     flash,
     redirect,
     render_template,
@@ -17,6 +19,7 @@ from hashlib import sha256
 from models.tabs import GuitarTab
 from web import app, db
 from web.forms.tabs import EditForm, ReplaceFileForm, UploadForm
+import json
 import os
 
 tabs = Blueprint("tabs", __name__)
@@ -35,6 +38,33 @@ def render(tab_id):
     else:
         tab.views += 1
     db.session.commit()
+
+    logs = {
+        "render": [],
+    }
+    if os.path.isfile(g.config.get("log_file")):
+        try:
+            with open(g.config.get("log_file"), "r") as f:
+                logs = json.loads(f.read())
+                if not "render" in logs:
+                    logs["render"] = []
+        except Exception:
+            pass
+
+    username = "anonymous"
+    if current_user.is_authenticated:
+        username = current_user.username
+
+    logs["render"].append(
+        {
+            "time": datetime.utcnow().isoformat(),
+            "title": f"{tab.band} - {tab.song}",
+            "user": username,
+            "tabid": tab.id,
+        }
+    )
+    with open(g.config.get("log_file"), "w") as f:
+        f.write(json.dumps(logs))
 
     return render_template("tabs/render.html", title=f"{tab.song} - Tabs", tab=tab)
 

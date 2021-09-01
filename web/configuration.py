@@ -7,6 +7,7 @@ def default():
 
     return {
         "registration_enabled": True,
+        "log_file": "logs.json",
     }
 
 

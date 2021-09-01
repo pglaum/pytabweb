@@ -4,7 +4,7 @@
 
 {% block content %}
 
-  <h1>Upload a new Guitar Tab</h1>
+  <h3>Upload a new Guitar Tab</h3>
 
   <div class="row">
     <div class="col-md-6">
@@ -13,10 +13,10 @@
 
         {{ form.hidden_tag() }}
 
-        {{ f.input(form.upload_file) }}
-        {{ f.input(form.song) }}
-        {{ f.input(form.album) }}
-        {{ f.input(form.band) }}
+        {{ f.input_with_invalid(form.upload_file) }}
+        {{ f.input_with_invalid(form.song) }}
+        {{ f.input_with_invalid(form.album) }}
+        {{ f.input_with_invalid(form.band) }}
         {{ f.input(form.track) }}
 
         <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">

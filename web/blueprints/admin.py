@@ -1,7 +1,12 @@
-from flask import Blueprint, g, render_template
+from flask import Blueprint, g, redirect, render_template, url_for
+from datetime import datetime
 from models.user import User
+from pytz import timezone
 from web import configuration
 from web.forms.admin import AdminForm
+import dateutil.parser
+import json
+import os
 
 admin = Blueprint("admin", __name__)
 
@@ -22,6 +27,29 @@ def settings():
 
     users = User.query.all()
 
+    logs = None
+    if os.path.isfile(g.config.get("log_file")):
+        with open(g.config.get("log_file"), "r") as f:
+            logs = json.loads(f.read())
+
+    if logs:
+        if "render" in logs:
+            for entry in logs["render"]:
+                t = dateutil.parser.isoparse(entry["time"])
+                tz = timezone("UTC")
+                t = t.replace(tzinfo=tz)
+                entry["time"] = t.strftime("%Y-%m-%d %H:%M:%S")
+
+        logs["render"].reverse()
+
     return render_template(
-        "admin/settings.html", title="Admin Settings", form=form, users=users
+        "admin/settings.html", title="Admin Settings", form=form, users=users, logs=logs
     )
+
+
+@admin.route("/logs/delete")
+def logs_delete():
+
+    os.remove(g.config.get("log_file"))
+
+    return redirect(url_for("admin.settings"))
