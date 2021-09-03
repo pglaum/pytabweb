@@ -71,11 +71,12 @@ def render(tab_id, file_id=None):
     if file_id:
         tab.fileid = file_id
 
-    fav = Favorite.query.filter_by(user_id=current_user.id, tab_id=tab.id).all()
-    if fav:
-        is_favorite = True
-    else:
-        is_favorite = False
+    is_favorite = False
+    if current_user.is_authenticated:
+
+        fav = Favorite.query.filter_by(user_id=current_user.id, tab_id=tab.id).all()
+        if fav:
+            is_favorite = True
 
     return render_template("tabs/render.html", title=f"{tab.song} - Tabs",
                            tab=tab,
