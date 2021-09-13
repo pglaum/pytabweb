@@ -17,7 +17,7 @@ app.register_blueprint(tabs_bp, url_prefix="/tabs")
 def global_preparations():
 
     g.request_start_time = time()
-    g.request_time = lambda: "%.5fs" % (time() - g.request_start_time)
+    g.request_time = lambda: "%.3fs" % (time() - g.request_start_time)
 
     # TODO: test how this performs under load; maybe push config into a
     # database
