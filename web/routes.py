@@ -1,4 +1,4 @@
-from flask import g
+from flask import g, render_template
 from time import time
 from web import app, configuration
 from web.blueprints.admin import admin as admin_bp
@@ -23,3 +23,9 @@ def global_preparations():
     # database
     g.config = configuration.get()
     g.search_form = SearchForm()
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+
+    return render_template('404.html'), 404
