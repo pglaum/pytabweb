@@ -2,6 +2,8 @@
 
 Guitar Pro tab viewer on the web.
 
+![Screenshot of the tab viewer](https://bin.pglaum.de/pytabweb_tab_view.png)
+
 ## Installation
 
 - download the repository
