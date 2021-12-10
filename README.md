@@ -30,3 +30,11 @@ SECRET_KEY=some-secret-key
 
 DATA_DIR=/path/to/where/you/want/to/store/the/tabs/
 ```
+
+## Run with gunicorn
+
+You can run the webserver with `gunicorn` like this:
+
+```shell
+gunicorn -w 4 -b 127.0.0.1:5100 app:app
+```
