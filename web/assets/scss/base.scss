@@ -1,1 +1,187 @@
-@import "bootstrap/scss/bootstrap.scss"
+@import "contrast.scss";
+@import "variables.scss";
+@import "bootstrap/scss/bootstrap.scss";
+
+@include media-breakpoint-down(md) {
+  .container {
+    width:100%;
+    max-width:100%;
+  }
+}
+
+a {
+  text-decoration:underline;
+
+  &:hover {
+    text-decoration:none;
+  }
+}
+
+a.nav-link,
+a.navbar-brand,
+a.btn {
+  text-decoration:none;
+}
+
+h1 a,
+h2 a,
+h3 a,
+h4 a,
+h5 a {
+  text-decoration:none;
+
+  &:hover {
+    text-decoration:underline;
+  }
+}
+
+label {
+  margin-bottom:0.25rem;
+}
+
+input[type="file"],
+input[type="number"],
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+select.form-select,
+textarea.form-control {
+  border-radius:0;
+  border-color:#888;
+  color:$gray-800;
+  padding:0.25rem 0.375rem;
+
+  &:active,
+  &:focus {
+    color:$gray-800;
+  }
+}
+
+input[type="checkbox"] {
+  position:relative;
+  top:2px;
+}
+
+select:not([multiple]).form-control {
+  border-radius:0;
+  border-color:#888;
+  color:$gray-800;
+  padding:0 0.75rem;
+  height:1.9rem !important;
+}
+
+form {
+  margin-bottom:1rem;
+}
+
+legend {
+  font-size:$base-font-size;
+  margin-bottom:0;
+}
+
+h1,
+h2 {
+  margin-top:0;
+
+  small {
+    font-size:$base-font-size;
+  }
+}
+
+h3 {
+  font-size:1.3rem;
+  border-bottom:1px solid $gray-200;
+  padding-bottom:0.25rem;
+
+  small {
+    font-size:1rem;
+    margin-left:1rem;
+  }
+}
+
+h4 {
+  font-size:1.1rem;
+  border-bottom:1px solid $gray-200;
+  padding-bottom:0.25rem;
+
+  small {
+    font-size:0.8rem;
+    margin-left:1rem;
+  }
+}
+
+h5 {
+  font-size:1rem;
+  font-weight:bold;
+}
+
+.table {
+  thead {
+    th {
+      padding:0.1rem 0.75rem;
+      border:none;
+    }
+  }
+
+  tbody {
+    td {
+      position:relative;
+      vertical-align:middle;
+      padding:0.1rem 0.75rem;
+      border:1px solid $gray-400;
+      background:$white;
+
+      label {
+        margin-bottom:0;
+      }
+    }
+  }
+
+  tr.danger {
+    background:lighten($danger, 20);
+  }
+
+  .btn-danger.btn-fill {
+    &:hover {
+      background:$danger;
+    }
+  }
+}
+
+section {
+  padding-bottom:0.5rem;
+}
+
+.btn {
+  border-radius:0;
+  transition:background 0.1s linear;
+}
+
+.btn-outline-danger,
+.btn-outline-secondary,
+.btn-outline-primary {
+  &:hover {
+    color:$light;
+  }
+}
+
+.alert {
+  border-radius:0;
+
+  .form-group & {
+    margin-top:1rem;
+  }
+}
+
+blockqoute {
+  padding-left:0.5rem;
+  border-left:3px solid #aaa;
+}
+
+.dropdown-menu,
+.list-group,
+.modal-content,
+.navbar-toggler {
+  border-radius:0;
+}
