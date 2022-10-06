@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <h3>Browse all tabs</h3>
+
+  <div>
+    <ul class="list-group">
+      {% for t in tabs %}
+        <li class="list-group-item">
+          <a href="{{ url_for('tabs.render', tab_id=t.id) }}">
+            {{ t.band }} · {{ t.song }}
+            {% if t.id in favs %}<i class="fa fa-star"></i>{% endif %}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+{% endblock %}

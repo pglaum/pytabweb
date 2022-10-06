@@ -78,9 +78,24 @@ def render(tab_id, file_id=None):
         if fav:
             is_favorite = True
 
-    return render_template("tabs/render.html", title=f"{tab.song} - Tabs",
-                           tab=tab,
-                           is_favorite=is_favorite)
+    return render_template(
+        "tabs/render.html", title=f"{tab.song} - Tabs", tab=tab, is_favorite=is_favorite
+    )
+
+
+@tabs.route("/browse")
+def browse():
+
+    tabs = Tab.query.order_by(Tab.song).order_by(Tab.band).all()
+
+    favs = []
+    if current_user.is_authenticated:
+        favorites = Favorite.query.filter_by(user_id=current_user.id).all()
+        favs = [f.tab_id for f in favorites]
+
+    return render_template(
+        "tabs/browse.html", title="Browse all tabs", tabs=tabs, favs=favs
+    )
 
 
 @tabs.route("/artist/<artist_name>")
@@ -106,7 +121,7 @@ def artist(artist_name):
         title=f"Tabs by {artist_name}",
         artist_name=artist_name,
         tabs=tabs,
-        favs=favs
+        favs=favs,
     )
 
 
@@ -358,7 +373,7 @@ def delete_file(tab_id, file_id):
 
 
 @login_required
-@tabs.route('/activate-file/<tab_id>/<file_id>')
+@tabs.route("/activate-file/<tab_id>/<file_id>")
 def activate_file(tab_id, file_id):
 
     tab = Tab.query.filter_by(id=tab_id).first()
@@ -379,7 +394,7 @@ def activate_file(tab_id, file_id):
 
 
 @login_required
-@tabs.route('/fav/<tab_id>')
+@tabs.route("/fav/<tab_id>")
 def fav_tab(tab_id):
 
     tab = Tab.query.filter_by(id=tab_id).first()
@@ -397,7 +412,7 @@ def fav_tab(tab_id):
 
 
 @login_required
-@tabs.route('/unfav/<tab_id>')
+@tabs.route("/unfav/<tab_id>")
 def unfav_tab(tab_id):
 
     tab = Tab.query.filter_by(id=tab_id).first()
@@ -405,8 +420,7 @@ def unfav_tab(tab_id):
         flash("Tab not found.", "danger")
         return redirect(url_for("tabs.render", tab_id=tab_id))
 
-    fav = Favorite.query.filter_by(user_id=current_user.id,
-                                   tab_id=tab_id).all()
+    fav = Favorite.query.filter_by(user_id=current_user.id, tab_id=tab_id).all()
     if fav:
         db.session.delete(fav[0])
         db.session.commit()
